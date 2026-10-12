@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baankeuze-check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2EEFF; --paper:#FFFFFF; --ink:#2B2350; --muted:#6A6290; --line:#E2DCF7;
+  --sun:#FFC93C; --pink:#FF5C8A; --teal:#12A594; --sky:#4C8DFF;
+  --pos:#12A594; --mid:#E08A00; --neg:#E5484D; --chip:#EEEAFB; --soft:#F8F6FF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A1530; --paper:#251F42; --ink:#F1EEFF; --muted:#B2A9DA; --line:#3A3263;
+    --pos:#3DD6C1; --mid:#FFB547; --neg:#FF7A7E; --chip:#312A55; --soft:#2C2550;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A1530; --paper:#251F42; --ink:#F1EEFF; --muted:#B2A9DA; --line:#3A3263;
+  --pos:#3DD6C1; --mid:#FFB547; --neg:#FF7A7E; --chip:#312A55; --soft:#2C2550;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;line-height:1.55;
+  background-image:radial-gradient(circle at 8% 4%,color-mix(in srgb,var(--sun) 35%,transparent) 0 9rem,transparent 9.1rem),
+                   radial-gradient(circle at 96% 18%,color-mix(in srgb,var(--pink) 18%,transparent) 0 6rem,transparent 6.1rem);
+  background-repeat:no-repeat}
+h1,h2,h3{font-family:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.1;margin:0}
+.wrap{max-width:68rem;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+header{margin-bottom:2rem;max-width:42rem}
+header h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800;letter-spacing:-.025em}
+header p{color:var(--muted);margin:.7rem 0 0}
+.grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
+@media (min-width:56rem){.grid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}
+  .result{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1.25rem)}}
+form{background:var(--paper);border-radius:22px;padding:.5rem 1.5rem;box-shadow:0 2px 0 var(--line)}
+.q{padding:1.3rem 0;border-bottom:2px dashed var(--line);display:grid;grid-template-columns:2.4rem 1fr;gap:0 .9rem}
+.q:last-child{border-bottom:0}
+.ico{width:2.4rem;height:2.4rem;border-radius:12px;display:grid;place-items:center;font-size:1.25rem;background:var(--c,var(--chip))}
+.title{display:block;font-weight:700;margin-bottom:.6rem;font-size:1.08rem}
+.hint{color:var(--muted);font-size:.92rem;margin:.5rem 0 0}
+input[type=text],input[type=number]{font:inherit;color:var(--ink);background:var(--soft);border:2px solid var(--line);
+  border-radius:12px;padding:.6rem .8rem;width:100%;max-width:20rem}
+input[type=number]{max-width:8rem}
+.unit{color:var(--muted);margin-left:.5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{cursor:pointer;background:var(--chip);border:2px solid transparent;border-radius:999px;padding:.45rem 1.05rem;user-select:none;transition:background .15s,color .15s,transform .15s}
+.chips label:hover{border-color:var(--line)}
+.chips input:checked+label{background:var(--ink);color:var(--paper);transform:rotate(-2deg)}
+.chips input:focus-visible+label,input:focus-visible,button:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.follow{margin-top:1rem;padding:1rem 1.1rem;background:var(--soft);border-radius:14px}
+.follow[hidden]{display:none}
+.range-row{display:flex;align-items:center;gap:1rem}
+input[type=range]{flex:1;accent-color:var(--pink)}
+.pct{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.5rem;min-width:3.8rem;text-align:right}
+
+.result{background:var(--paper);border-radius:22px;padding:1.5rem;box-shadow:0 2px 0 var(--line)}
+.meter{position:relative;width:min(16rem,100%);margin:0 auto}
+.meter svg{width:100%;height:auto;display:block}
+.meter .num{position:absolute;left:0;right:0;bottom:0;text-align:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:3.4rem;line-height:1}
+.meter .num small{font-size:1rem;color:var(--muted);font-weight:500}
+.emoji{text-align:center;font-size:2rem;margin-top:.6rem;line-height:1}
+.verdict{text-align:center;margin:.4rem 0 .2rem;font-size:1.55rem;font-weight:800;font-family:"Bricolage Grotesque",sans-serif}
+.verdict-sub{text-align:center;color:var(--muted);margin:0 0 1.25rem}
+.breakdown{list-style:none;margin:0;padding:0}
+.breakdown li{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:2px dashed var(--line);font-size:.97rem}
+.breakdown li:last-child{border-bottom:0}
+.breakdown li span:last-child{font-weight:700;white-space:nowrap}
+.plus{color:var(--pos)} .min{color:var(--neg)} .zero{color:var(--muted)}
+.knockout{background:color-mix(in srgb,var(--neg) 14%,transparent);border-radius:14px;padding:.8rem 1rem;margin-bottom:1rem}
+.knockout[hidden]{display:none}
+.actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.25rem}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:.65rem 1.1rem;cursor:pointer;color:var(--ink)}
+.primary{background:var(--sun);color:#2B2350}
+.secondary{background:var(--chip)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.toast{margin-top:.8rem;color:var(--muted);font-size:.92rem;min-height:1.4em}
+
+.compare{margin-top:2.75rem}
+.compare h2{font-size:1.7rem;margin-bottom:.3rem}
+.compare>p{color:var(--muted);margin:0 0 1rem}
+.table-wrap{overflow-x:auto;background:var(--paper);border-radius:22px;box-shadow:0 2px 0 var(--line)}
+table{border-collapse:collapse;width:100%;min-width:46rem;font-size:.97rem}
+th,td{text-align:left;padding:.75rem 1rem;border-bottom:2px dashed var(--line);vertical-align:middle}
+th{color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.score{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.25rem}
+.rowbtns{display:flex;gap:.4rem;justify-content:flex-end}
+.rowbtns button{padding:.35rem .7rem;font-size:.9rem}
+.del{background:none;color:var(--muted);font-weight:400}
+.empty{color:var(--muted);padding:1.25rem 1rem}
+.medal{margin-right:.3rem}
+footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
+
+/* Print report */
+#report{display:none}
+@media print{
+  @page{size:A4;margin:16mm}
+  body{background:#fff!important;color:#1d1838;font-size:11pt}
+  .wrap{display:none!important}
+  #report{display:block!important}
+}
+.rp-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #1d1838;padding-bottom:8pt;margin-bottom:14pt}
+.rp-head h1{font-size:24pt;font-weight:800}
+.rp-head .date{color:#555;font-size:10pt}
+.rp-job{font-size:15pt;font-weight:700;margin:0 0 12pt}
+.rp-score{display:flex;gap:16pt;align-items:center;border-radius:10pt;padding:12pt 16pt;margin-bottom:16pt;border:2pt solid var(--rc,#1d1838)}
+.rp-score .big{font-family:"Bricolage Grotesque",sans-serif;font-size:40pt;font-weight:800;color:var(--rc);line-height:1}
+.rp-score .big small{font-size:12pt;color:#666}
+.rp-score .vd{font-size:16pt;font-weight:800;color:var(--rc)}
+.rp-score .vs{color:#444;margin-top:2pt}
+.rp h2{font-size:13pt;margin:16pt 0 6pt}
+.rp table{min-width:0;width:100%;font-size:10.5pt}
+.rp th,.rp td{border-bottom:1px solid #ccc;padding:5pt 6pt}
+.rp th{color:#555;width:45%}
+.rp td.pt{text-align:right;font-weight:700;width:18%}
+.rp .lines div{border-bottom:1px solid #bbb;height:22pt}
+.rp .foot{margin-top:18pt;color:#777;font-size:9pt;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Is dit jouw nieuwe baan? 🎯</h1>
+    <p>Beantwoord een paar vragen over de vacature en je ziet meteen hoe goed hij bij je past. Bewaar elke baan, dan kun je ze straks naast elkaar zetten en uitprinten.</p>
+  </header>
+
+  <div class="grid">
+    <form id="f" autocomplete="off" onsubmit="return false">
+      <div class="q">
+        <div class="ico" style="--c:color-mix(in srgb,var(--sky) 22%,transparent)" aria-hidden="true">💼</div>
+        <div>
+          <label class="title" for="naam">Om welke baan gaat het?</label>
+          <input type="text" id="naam" placeholder="Bijv. Administratief medewerker bij de gemeente">
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="ico" style="--c:color-mix(in srgb,var(--sun) 35%,transparent)" aria-hidden="true">⏱️</div>
+        <div>
+          <label class="title" for="reistijd">Hoe lang ben je onderweg, enkele reis?</label>
+          <input type="number" id="reistijd" min="0" max="300" inputmode="numeric" placeholder="0"><span class="unit">minuten</span>
+          <p class="hint">Reken eerlijk, ook met de file van half acht.</p>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="ico" style="--c:color-mix(in srgb,var(--teal) 22%,transparent)" aria-hidden="true">🚲</div>
+        <div>
+          <span class="title" id="l-fiets">Kun je er op de fiets heen?</span>
+          <div class="chips" role="radiogroup" aria-labelledby="l-fiets">
+            <input type="radio" name="fiets" id="fiets-ja" value="ja"><label for="fiets-ja">Ja, heerlijk</label>
+            <input type="radio" name="fiets" id="fiets-nee" value="nee"><label for="fiets-nee">Nee</label>
+          </div>
+          <p class="hint">Tegenwind telt niet mee. In Nederland heb je die toch altijd.</p>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="ico" style="--c:color-mix(in srgb,var(--pink) 20%,transparent)" aria-hidden="true">🏢</div>
+        <div>
+          <span class="title" id="l-org">Wat voor organisatie is het?</span>
+          <div class="chips" role="radiogroup" aria-labelledby="l-org">
+            <input type="radio" name="org" id="org-c" value="commercieel"><label for="org-c">Commercieel</label>
+            <input type="radio" name="org" id="org-z" value="zorg"><label for="org-z">Zorg</label>
+            <input type="radio" name="org" id="org-n" value="non-profit"><label for="org-n">Non-profit</label>
+            <input type="radio" name="org" id="org-o" value="overheid"><label for="org-o">Overheid</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="ico" style="--c:color-mix(in srgb,var(--sky) 22%,transparent)" aria-hidden="true">📞</div>
+        <div>
+          <span class="title" id="l-bel">Moet je telefoneren voor de functie?</span>
+          <div class="chips" role="radiogroup" aria-labelledby="l-bel">
+            <input type="radio" name="bellen" id="bel-ja" value="ja"><label for="bel-ja">Ja</label>
+            <input type="radio" name="bellen" id="bel-nee" value="nee"><label for="bel-nee">Nee</label>
+          </div>
+          <div class="follow" id="belFollow" hidden>
+            <label class="title" for="belPct">Hoeveel procent van je dag zit je ongeveer aan de telefoon?</label>
+            <div class="range-row">
+              <input type="range" id="belPct" min="0" max="100" step="5" value="10">
+              <span class="pct" id="belPctOut">10%</span>
+            </div>
+            <p class="hint" id="belHint">Tot 20% is prima. Daarboven wordt het een afrader.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="ico" style="--c:color-mix(in srgb,var(--sun) 35%,transparent)" aria-hidden="true">🚶‍♀️</div>
+        <div>
+          <span class="title" id="l-staan">Moet je veel staan of lopen?</span>
+          <div class="chips" role="radiogroup" aria-labelledby="l-staan">
+            <input type="radio" name="staan" id="staan-ja" value="ja"><label for="staan-ja">Ja</label>
+            <input type="radio" name="staan" id="staan-nee" value="nee"><label for="staan-nee">Nee, lekker zitten</label>
+          </div>
+          <div class="follow" id="staanFollow" hidden>
+            <label class="title" for="staanPct">Hoeveel procent van je dag sta of loop je ongeveer?</label>
+            <div class="range-row">
+              <input type="range" id="staanPct" min="0" max="100" step="5" value="10">
+              <span class="pct" id="staanPctOut">10%</span>
+            </div>
+            <p class="hint" id="staanHint">Tot 25% is prima. Daarboven wordt het een afrader.</p>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <aside class="result" aria-live="polite">
+      <div class="knockout" id="knockout" hidden><strong>Afrader:</strong> je staat of loopt meer dan een kwart van de dag. Dan is het advies negatief, hoe leuk de rest ook klinkt.</div>
+      <div class="meter">
+        <svg viewBox="0 0 200 112" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#E5484D"/><stop offset=".5" stop-color="#FFC93C"/><stop offset="1" stop-color="#12A594"/>
+            </linearGradient>
+          </defs>
+          <path d="M16 100 A84 84 0 0 1 184 100" fill="none" stroke="var(--line)" stroke-width="18" stroke-linecap="round"/>
+          <path id="arc" d="M16 100 A84 84 0 0 1 184 100" fill="none" stroke="url(#g)" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" style="transition:stroke-dasharray .5s cubic-bezier(.3,1.4,.5,1)"/>
+        </svg>
+        <div class="num"><span id="score">–</span><small>/100</small></div>
+      </div>
+      <div class="emoji" id="emoji" aria-hidden="true">🤔</div>
+      <p class="verdict" id="verdict">Nog niets ingevuld</p>
+      <p class="verdict-sub" id="verdictSub">Begin links met de eerste vraag.</p>
+      <ul class="breakdown" id="breakdown"></ul>
+      <div class="actions">
+        <button type="button" class="primary" id="save" disabled>Bewaar deze baan</button>
+        <button type="button" class="secondary" id="printNow" disabled>Print rapport</button>
+        <button type="button" class="secondary" id="reset">Nieuwe baan</button>
+      </div>
+      <div class="toast" id="toast"></div>
+    </aside>
+  </div>
+
+  <section class="compare">
+    <h2>Naast elkaar 🏆</h2>
+    <p>Bewaarde banen blijven staan als je de pagina opnieuw opent, zolang je dezelfde browser gebruikt.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Baan</th><th>Score</th><th>Advies</th><th>Reistijd</th><th>Fiets</th><th>Organisatie</th><th>Bellen</th><th>Staan/lopen</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Gemaakt met liefde. De uiteindelijke beslissing ligt natuurlijk bij jou, niet bij een meter. 💛</footer>
+</div>
+
+<div id="report" class="rp"></div>
+
+<script>
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var f = $('f');
+  var STORE = 'baankeuze-vacatures';
+  var COL = {pos:'#12A594',mid:'#E08A00',neg:'#E5484D'};
+
+  function val(n){var el=f.querySelector('input[name="'+n+'"]:checked');return el?el.value:null}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+  function read(){
+    var r=$('reistijd').value;
+    return {naam:$('naam').value.trim(), reistijd:r===''?null:Math.max(0,Number(r)),
+      fiets:val('fiets'), org:val('org'), bellen:val('bellen'), belPct:Number($('belPct').value),
+      staan:val('staan'), staanPct:Number($('staanPct').value)};
+  }
+
+  // Start 40, maximaal 100
+  function calc(d){
+    var parts=[], total=40, knock=false, why=[];
+    if(d.reistijd!==null){
+      var p = d.reistijd<=60 ? Math.round(25-(d.reistijd/60)*25) : -Math.round(Math.min(25,(d.reistijd-60)/60*25));
+      parts.push(['Reistijd '+d.reistijd+' minuten',p]); total+=p;
+    }
+    if(d.fiets){var fp=d.fiets==='ja'?15:0; parts.push([d.fiets==='ja'?'Op de fiets bereikbaar':'Niet op de fiets',fp]); total+=fp;}
+    if(d.org){var m={'commercieel':0,'non-profit':10,'overheid':10,'zorg':20}; parts.push(['Organisatie: '+d.org,m[d.org]]); total+=m[d.org];}
+    if(d.bellen){
+      if(d.bellen==='ja'&&d.belPct>=20){knock=true; why.push('bellen'); parts.push(['Telefoneren ('+d.belPct+'% van de dag)','afrader']);}
+      else {var bp=d.bellen==='ja'?-Math.round(d.belPct/20*8):0; parts.push([d.bellen==='ja'?'Telefoneren ('+d.belPct+'% van de dag)':'Geen telefoonwerk',bp]); total+=bp;}
+    }
+    if(d.staan){
+      var sp = d.staan==='ja' ? (d.staanPct==null?100:d.staanPct) : 0;
+      if(d.staan==='ja' && sp>=25){knock=true; why.push('staan'); parts.push(['Staan/lopen ('+sp+'% van de dag)','afrader']);}
+      else if(d.staan==='ja'){var s=-Math.round(sp/25*8); parts.push(['Staan/lopen ('+sp+'% van de dag)',s]); total+=s;}
+      else parts.push(['Vooral zittend werk',0]);
+    }
+    total=Math.max(0,Math.min(100,total));
+    var done=d.reistijd!==null&&d.fiets&&d.org&&d.bellen&&d.staan;
+    var cls = knock?'neg':total>=70?'pos':total>=50?'mid':'neg';
+    var verdict = cls==='pos'?'Positief advies':cls==='mid'?'Twijfelgeval':'Negatief advies';
+    var sub, emo;
+    if(knock){
+      if(why.length>1){sub='Te veel bellen én te veel op de been. Dubbele afrader.';emo='🙅‍♀️';}
+      else if(why[0]==='bellen'){sub='Te veel aan de telefoon. Je oor stemt tegen.';emo='📵';}
+      else {sub='Te veel op de been. Je voeten stemmen tegen.';emo='🦶';}
+    }
+    else if(total>=85){sub='Dit klinkt als een droombaan. Taart halen?';emo='🎉';}
+    else if(cls==='pos'){sub='Deze baan past goed bij je wensen.';emo='😄';}
+    else if(cls==='mid'){sub='Er zit wat tegen. Even een nachtje over slapen.';emo='🤔';}
+    else {sub='Te veel punten zitten tegen. Volgende vacature!';emo='🙅‍♀️';}
+    return {score:total,parts:parts,done:!!done,knock:knock,why:why,cls:cls,verdict:verdict,sub:sub,emo:emo};
+  }
+
+  function fmtPart(v){
+    if(v==='afrader')return['min','afrader'];
+    if(v>0)return['plus','+'+v]; if(v<0)return['min','−'+Math.abs(v)]; return['zero','0'];
+  }
+
+  function render(){
+    var d=read(), r=calc(d);
+    $('belFollow').hidden=d.bellen!=='ja'; $('belPctOut').textContent=d.belPct+'%';
+    $('belHint').textContent = d.belPct<20?'Tot 20% is prima. Een belletje hier en daar kan geen kwaad.':d.belPct>=75?'Dat is bijna een callcenter. Afrader.':'20% of meer: dat wordt een afrader.';
+    $('staanFollow').hidden=d.staan!=='ja'; $('staanPctOut').textContent=d.staanPct+'%';
+    $('staanHint').textContent = d.staanPct<25?'Tot 25% is prima. Even de benen strekken is gezond.':'Meer dan een kwart van de dag: dat wordt een afrader.';
+    $('knockout').hidden=!r.knock;
+    if(r.knock){
+      var reasons=[];
+      if(r.why.indexOf('bellen')>-1)reasons.push('je zit 20% of meer van de dag aan de telefoon');
+      if(r.why.indexOf('staan')>-1)reasons.push('je staat of loopt meer dan een kwart van de dag');
+      $('knockout').innerHTML='<strong>Afrader:</strong> '+reasons.join(' en ')+'. Dan is het advies negatief, hoe leuk de rest ook klinkt.';
+    }
+    var n=r.parts.length;
+    if(!n){
+      $('score').textContent='–'; $('arc').setAttribute('stroke-dasharray','0 100');
+      $('emoji').textContent='🤔'; $('verdict').textContent='Nog niets ingevuld'; $('verdict').style.color='';
+      $('verdictSub').textContent='Begin links met de eerste vraag.';
+    } else {
+      $('score').textContent=r.score; $('arc').setAttribute('stroke-dasharray',Math.max(1,r.score)+' 100');
+      if(r.done||r.knock){
+        $('emoji').textContent=r.emo; $('verdict').textContent=r.verdict; $('verdict').style.color=COL[r.cls]; $('verdictSub').textContent=r.sub;
+      } else {
+        var left=5-n; $('emoji').textContent='✍️'; $('verdict').textContent='Tussenstand'; $('verdict').style.color='';
+        $('verdictSub').textContent='Nog '+left+(left===1?' vraag':' vragen')+' te gaan. Bijna!';
+      }
+    }
+    $('breakdown').innerHTML=r.parts.map(function(p){var x=fmtPart(p[1]);return '<li><span>'+esc(p[0])+'</span><span class="'+x[0]+'">'+x[1]+'</span></li>';}).join('');
+    $('save').disabled=!r.done; $('printNow').disabled=!r.done;
+  }
+
+  function load(){try{return JSON.parse(localStorage.getItem(STORE))||[]}catch(e){return[]}}
+  function store(l){try{localStorage.setItem(STORE,JSON.stringify(l));return true}catch(e){return false}}
+  function toast(t){$('toast').textContent=t; clearTimeout(toast.t); toast.t=setTimeout(function(){$('toast').textContent=''},3500)}
+
+  function answerRows(d){
+    return [
+      ['Reistijd (enkele reis)', d.reistijd+' minuten'],
+      ['Op de fiets bereikbaar', d.fiets],
+      ['Soort organisatie', d.org],
+      ['Telefoneren', d.bellen==='ja'?'ja, ongeveer '+d.belPct+'% van de dag':'nee'],
+      ['Staan of lopen', d.staan==='ja'?'ja, ongeveer '+(d.staanPct==null?'?':d.staanPct)+'% van de dag':'nee']
+    ];
+  }
+
+  function buildReport(d){
+    var r=calc(d), c=COL[r.cls];
+    var dt=new Date().toLocaleDateString('nl-NL',{day:'numeric',month:'long',year:'numeric'});
+    var html='<div class="rp-head"><h1>Baankeuze-rapport</h1><div class="date">'+dt+'</div></div>'+
+      '<p class="rp-job">'+esc(d.naam||'Naamloze vacature')+'</p>'+
+      '<div class="rp-score" style="--rc:'+c+'"><div class="big">'+r.score+'<small>/100</small></div>'+
+      '<div><div class="vd">'+r.emo+' '+r.verdict+'</div><div class="vs">'+esc(r.sub)+'</div></div></div>'+
+      '<h2>Jouw antwoorden</h2><table><tbody>'+answerRows(d).map(function(a){return '<tr><th>'+a[0]+'</th><td>'+esc(a[1])+'</td></tr>'}).join('')+'</tbody></table>'+
+      '<h2>Zo is de score opgebouwd</h2><table><tbody><tr><th>Startpunten</th><td></td><td class="pt">40</td></tr>'+
+      r.parts.map(function(p){var x=fmtPart(p[1]);return '<tr><th>'+esc(p[0])+'</th><td></td><td class="pt" style="color:'+(x[0]==='plus'?COL.pos:x[0]==='min'?COL.neg:'#777')+'">'+x[1]+'</td></tr>'}).join('')+
+      '<tr><th>Eindscore</th><td></td><td class="pt">'+r.score+'</td></tr></tbody></table>'+
+      '<h2>Eigen aantekeningen</h2><div class="lines"><div></div><div></div><div></div><div></div><div></div></div>'+
+      '<p class="foot">De meter adviseert, jij beslist. Succes! 💛</p>';
+    $('report').innerHTML=html;
+  }
+  function printReport(d){
+    buildReport(d);
+    try{ window.print(); }
+    catch(e){ toast('Printen startte niet automatisch. Druk op Ctrl+P (of Cmd+P op een Mac); het rapport staat klaar.'); }
+  }
+
+  function renderRows(){
+    var l=load();
+    if(!l.length){$('rows').innerHTML='<tr><td colspan="9" class="empty">Nog geen banen bewaard. Vul er een in en klik op "Bewaar deze baan". 📝</td></tr>';return}
+    l.sort(function(a,b){return calc(b).score-(calc(b).knock?999:0)-(calc(a).score-(calc(a).knock?999:0))});
+    var medals=['🥇','🥈','🥉'];
+    $('rows').innerHTML=l.map(function(x,i){
+      var r=calc(x);
+      var m = !r.knock && i<3 ? '<span class="medal" aria-hidden="true">'+medals[i]+'</span>' : '';
+      return '<tr><td>'+m+esc(x.naam||'Naamloos')+'</td><td class="score" style="color:'+COL[r.cls]+'">'+r.score+'</td><td>'+r.verdict+'</td><td>'+x.reistijd+' min</td><td>'+x.fiets+'</td><td>'+esc(x.org)+'</td><td>'+(x.bellen==='ja'?x.belPct+'%':'nee')+'</td><td>'+(x.staan==='ja'?(x.staanPct==null?'ja':x.staanPct+'%'):'nee')+'</td>'+
+        '<td><div class="rowbtns"><button class="secondary" data-print="'+x.id+'">Print</button><button class="del" data-del="'+x.id+'">Verwijder</button></div></td></tr>';
+    }).join('');
+  }
+
+  $('save').addEventListener('click',function(){
+    var d=read(); if(!calc(d).done)return;
+    var l=load(); l.push(Object.assign({id:Date.now().toString(36)},d));
+    toast(store(l)?'Bewaard! Hij staat nu onderaan in de vergelijking.':'Bewaren lukte niet in deze browser. Print het rapport om het vast te leggen.');
+    renderRows();
+  });
+  $('printNow').addEventListener('click',function(){printReport(read())});
+  $('rows').addEventListener('click',function(e){
+    var p=e.target.closest('[data-print]'), del=e.target.closest('[data-del]');
+    if(p){var x=load().filter(function(y){return y.id===p.dataset.print})[0]; if(x)printReport(x);}
+    if(del){store(load().filter(function(y){return y.id!==del.dataset.del})); renderRows(); toast('Verwijderd. Die was het dus niet. 👋');}
+  });
+  $('reset').addEventListener('click',function(){f.reset();$('belPct').value=10;$('staanPct').value=10;render();$('naam').focus();window.scrollTo({top:0,behavior:'smooth'})});
+  f.addEventListener('input',render); f.addEventListener('change',render);
+  window.addEventListener('beforeprint',function(){ if(!$('report').innerHTML){var d=read(); if(calc(d).done) buildReport(d);} });
+  render(); renderRows();
+})();
+</script>
+</body>
+</html>
