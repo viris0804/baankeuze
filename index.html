@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="nl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Baankeuze-check</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
-<style>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Baankeuze-check</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap"
+      rel="stylesheet">
+    <style>
 :root{
   --bg:#F2EEFF; --paper:#FFFFFF; --ink:#2B2350; --muted:#6A6290; --line:#E2DCF7;
   --sun:#FFC93C; --pink:#FF5C8A; --teal:#12A594; --sky:#4C8DFF;
@@ -89,7 +92,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .compare h2{font-size:1.7rem;margin-bottom:.3rem}
 .compare>p{color:var(--muted);margin:0 0 1rem}
 .table-wrap{overflow-x:auto;background:var(--paper);border-radius:22px;box-shadow:0 2px 0 var(--line)}
-table{border-collapse:collapse;width:100%;min-width:46rem;font-size:.97rem}
+table{border-collapse:collapse;width:100%;min-width:30rem;font-size:.97rem}
 th,td{text-align:left;padding:.75rem 1rem;border-bottom:2px dashed var(--line);vertical-align:middle}
 th{color:var(--muted);font-weight:700}
 tr:last-child td{border-bottom:0}
@@ -99,6 +102,8 @@ td.score{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:
 .del{background:none;color:var(--muted);font-weight:400}
 .empty{color:var(--muted);padding:1.25rem 1rem}
 .medal{margin-right:.3rem}
+.edit{background:none;padding:0;border-radius:0;text-align:left;text-decoration:underline dotted;text-underline-offset:.25em}
+.edit:hover{text-decoration-style:solid}
 footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
 
 /* Print report */
@@ -126,141 +131,258 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
 .rp .lines div{border-bottom:1px solid #bbb;height:22pt}
 .rp .foot{margin-top:18pt;color:#777;font-size:9pt;text-align:center}
 </style>
-</head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>Is dit jouw nieuwe baan? 🎯</h1>
-    <p>Beantwoord een paar vragen over de vacature en je ziet meteen hoe goed hij bij je past. Bewaar elke baan, dan kun je ze straks naast elkaar zetten en uitprinten.</p>
-  </header>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Is dit jouw nieuwe baan? 🎯</h1>
+        <p>Beantwoord een paar vragen over de vacature en je ziet meteen hoe
+          goed hij bij je past. Bewaar elke baan, dan kun je ze straks naast
+          elkaar zetten en uitprinten.</p>
+      </header>
 
-  <div class="grid">
-    <form id="f" autocomplete="off" onsubmit="return false">
-      <div class="q">
-        <div class="ico" style="--c:color-mix(in srgb,var(--sky) 22%,transparent)" aria-hidden="true">💼</div>
-        <div>
-          <label class="title" for="naam">Om welke baan gaat het?</label>
-          <input type="text" id="naam" placeholder="Bijv. Administratief medewerker bij de gemeente">
-        </div>
-      </div>
-
-      <div class="q">
-        <div class="ico" style="--c:color-mix(in srgb,var(--sun) 35%,transparent)" aria-hidden="true">⏱️</div>
-        <div>
-          <label class="title" for="reistijd">Hoe lang ben je onderweg, enkele reis?</label>
-          <input type="number" id="reistijd" min="0" max="300" inputmode="numeric" placeholder="0"><span class="unit">minuten</span>
-          <p class="hint">Reken eerlijk, ook met de file van half acht.</p>
-        </div>
-      </div>
-
-      <div class="q">
-        <div class="ico" style="--c:color-mix(in srgb,var(--teal) 22%,transparent)" aria-hidden="true">🚲</div>
-        <div>
-          <span class="title" id="l-fiets">Kun je er op de fiets heen?</span>
-          <div class="chips" role="radiogroup" aria-labelledby="l-fiets">
-            <input type="radio" name="fiets" id="fiets-ja" value="ja"><label for="fiets-ja">Ja, heerlijk</label>
-            <input type="radio" name="fiets" id="fiets-nee" value="nee"><label for="fiets-nee">Nee</label>
-          </div>
-          <p class="hint">Tegenwind telt niet mee. In Nederland heb je die toch altijd.</p>
-        </div>
-      </div>
-
-      <div class="q">
-        <div class="ico" style="--c:color-mix(in srgb,var(--pink) 20%,transparent)" aria-hidden="true">🏢</div>
-        <div>
-          <span class="title" id="l-org">Wat voor organisatie is het?</span>
-          <div class="chips" role="radiogroup" aria-labelledby="l-org">
-            <input type="radio" name="org" id="org-c" value="commercieel"><label for="org-c">Commercieel</label>
-            <input type="radio" name="org" id="org-z" value="zorg"><label for="org-z">Zorg</label>
-            <input type="radio" name="org" id="org-n" value="non-profit"><label for="org-n">Non-profit</label>
-            <input type="radio" name="org" id="org-o" value="overheid"><label for="org-o">Overheid</label>
-          </div>
-        </div>
-      </div>
-
-      <div class="q">
-        <div class="ico" style="--c:color-mix(in srgb,var(--sky) 22%,transparent)" aria-hidden="true">📞</div>
-        <div>
-          <span class="title" id="l-bel">Moet je telefoneren voor de functie?</span>
-          <div class="chips" role="radiogroup" aria-labelledby="l-bel">
-            <input type="radio" name="bellen" id="bel-ja" value="ja"><label for="bel-ja">Ja</label>
-            <input type="radio" name="bellen" id="bel-nee" value="nee"><label for="bel-nee">Nee</label>
-          </div>
-          <div class="follow" id="belFollow" hidden>
-            <label class="title" for="belPct">Hoeveel procent van je dag zit je ongeveer aan de telefoon?</label>
-            <div class="range-row">
-              <input type="range" id="belPct" min="0" max="100" step="5" value="10">
-              <span class="pct" id="belPctOut">10%</span>
+      <div class="grid">
+        <form id="f" autocomplete="off" onsubmit="return false">
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--sky) 22%,transparent)"
+              aria-hidden="true">💼</div>
+            <div>
+              <label class="title" for="naam">Om welke baan gaat het?</label>
+              <input type="text" id="naam"
+                placeholder="Bijv. Administratief medewerker bij de gemeente">
             </div>
-            <p class="hint" id="belHint">Tot 20% is prima. Daarboven wordt het een afrader.</p>
           </div>
-        </div>
-      </div>
 
-      <div class="q">
-        <div class="ico" style="--c:color-mix(in srgb,var(--sun) 35%,transparent)" aria-hidden="true">🚶‍♀️</div>
-        <div>
-          <span class="title" id="l-staan">Moet je veel staan of lopen?</span>
-          <div class="chips" role="radiogroup" aria-labelledby="l-staan">
-            <input type="radio" name="staan" id="staan-ja" value="ja"><label for="staan-ja">Ja</label>
-            <input type="radio" name="staan" id="staan-nee" value="nee"><label for="staan-nee">Nee, lekker zitten</label>
-          </div>
-          <div class="follow" id="staanFollow" hidden>
-            <label class="title" for="staanPct">Hoeveel procent van je dag sta of loop je ongeveer?</label>
-            <div class="range-row">
-              <input type="range" id="staanPct" min="0" max="100" step="5" value="10">
-              <span class="pct" id="staanPctOut">10%</span>
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--sun) 35%,transparent)"
+              aria-hidden="true">⏱️</div>
+            <div>
+              <label class="title" for="reistijd">Hoe lang ben je onderweg,
+                enkele reis?</label>
+              <input type="number" id="reistijd" min="0" max="300"
+                inputmode="numeric" placeholder="0"><span
+                class="unit">minuten</span>
+              <p class="hint">Reken eerlijk, ook met de file van half acht.</p>
             </div>
-            <p class="hint" id="staanHint">Tot 25% is prima. Daarboven wordt het een afrader.</p>
           </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--sky) 22%,transparent)"
+              aria-hidden="true">🕘</div>
+            <div>
+              <label class="title" for="uren">Hoeveel uur per week is de functie?</label>
+              <input type="number" id="uren" min="0" max="60"
+                inputmode="numeric" placeholder="0"><span
+                class="unit">uur</span>
+              <p class="hint">Tussen 16 en 24 uur is goed. Minder of meer telt negatief.</p>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--teal) 22%,transparent)"
+              aria-hidden="true">📅</div>
+            <div>
+              <span class="title" id="l-weekend">Moet je (af en toe) in het weekend werken?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-weekend">
+                <input type="radio" name="weekend" id="weekend-nooit" value="nooit"><label
+                  for="weekend-nooit">Nooit</label>
+                <input type="radio" name="weekend" id="weekend-soms" value="af en toe"><label
+                  for="weekend-soms">Af en toe</label>
+                <input type="radio" name="weekend" id="weekend-elk" value="elk weekend"><label
+                  for="weekend-elk">Elk weekend</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--teal) 22%,transparent)"
+              aria-hidden="true">🚲</div>
+            <div>
+              <span class="title" id="l-fiets">Kun je er op de fiets
+                heen?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-fiets">
+                <input type="radio" name="fiets" id="fiets-ja" value="ja"><label
+                  for="fiets-ja">Ja, heerlijk</label>
+                <input type="radio" name="fiets" id="fiets-nee"
+                  value="nee"><label for="fiets-nee">Nee</label>
+              </div>
+              <p class="hint">Tegenwind telt niet mee. In Nederland heb je die
+                toch altijd.</p>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--pink) 20%,transparent)"
+              aria-hidden="true">🏢</div>
+            <div>
+              <span class="title" id="l-org">Wat voor organisatie is het?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-org">
+                <input type="radio" name="org" id="org-c" value="commercieel"><label for="org-c">Commercieel</label>
+                <input type="radio" name="org" id="org-z" value="zorg"><label for="org-z">Zorg</label>
+                <input type="radio" name="org" id="org-n" value="non-profit"><label for="org-n">Non-profit</label>
+                <input type="radio" name="org" id="org-o" value="overheid"><label for="org-o">Overheid</label>
+                <input type="radio" name="org" id="org-w" value="winkel"><label for="org-w">Winkel</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--sky) 22%,transparent)"
+              aria-hidden="true">📞</div>
+            <div>
+              <span class="title" id="l-bel">Moet je telefoneren voor de
+                functie?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-bel">
+                <input type="radio" name="bellen" id="bel-ja" value="ja"><label
+                  for="bel-ja">Ja</label>
+                <input type="radio" name="bellen" id="bel-nee"
+                  value="nee"><label for="bel-nee">Nee</label>
+              </div>
+              <div class="follow" id="belFollow" hidden>
+                <label class="title" for="belPct">Hoeveel procent van je dag zit
+                  je ongeveer aan de telefoon?</label>
+                <div class="range-row">
+                  <input type="range" id="belPct" min="0" max="100" step="5"
+                    value="10">
+                  <span class="pct" id="belPctOut">10%</span>
+                </div>
+                <p class="hint" id="belHint">Tot 20% is prima. Daarboven wordt
+                  het een afrader.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--sun) 35%,transparent)"
+              aria-hidden="true">🧍</div>
+            <div>
+              <span class="title" id="l-staan">Moet je veel staan bij deze functie?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-staan">
+                <input type="radio" name="staan" id="staan-ja" value="ja"><label
+                  for="staan-ja">Ja</label>
+                <input type="radio" name="staan" id="staan-nee"
+                  value="nee"><label for="staan-nee">Nee, lekker zitten</label>
+              </div>
+              <div class="follow" id="staanFollow" hidden>
+                <label class="title" for="staanPct">Hoeveel procent van je dag
+                  sta je ongeveer?</label>
+                <div class="range-row">
+                  <input type="range" id="staanPct" min="0" max="100" step="5"
+                    value="10">
+                  <span class="pct" id="staanPctOut">10%</span>
+                </div>
+                <p class="hint" id="staanHint">Tot 25% is prima. Daarboven wordt
+                  het een afrader.</p>
+              </div>
+            </div>
+          </div>
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--sun) 65%,transparent)"
+              aria-hidden="true">🚶‍♀️‍➡️</div>
+            <div>
+              <span class="title" id="l-lopen">Moet je veel lopen bij deze functie?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-lopen">
+                <input type="radio" name="lopen" id="lopen-ja" value="ja"><label
+                  for="lopen-ja">Ja, lekker bewegen</label>
+                <input type="radio" name="lopen" id="lopen-nee"
+                  value="nee"><label for="lopen-nee">Nee</label>
+              </div>
+              <div class="follow" id="lopenFollow" hidden>
+                <label class="title" for="lopenPct">Hoeveel procent van je dag loop je ongeveer?</label>
+                <div class="range-row">
+                  <input type="range" id="lopenPct" min="0" max="100" step="5"
+                    value="10">
+                  <span class="pct" id="lopenPctOut">10%</span>
+                </div>
+                <p class="hint" id="lopenHint">Tot 60% is prima. Daarboven wordt
+                  het een afrader.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="q">
+            <div class="ico"
+              style="--c:color-mix(in srgb,var(--pink) 30%,transparent)"
+              aria-hidden="true">👥</div>
+            <div>
+              <span class="title" id="l-collega">Heb je directe dagelijkse collega's bij deze functie?</span>
+              <div class="chips" role="radiogroup" aria-labelledby="l-collega">
+                <input type="radio" name="collega" id="collega-ja" value="ja"><label
+                  for="collega-ja">Ja</label>
+                <input type="radio" name="collega" id="collega-nee"
+                  value="nee"><label for="collega-nee">Nee</label>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <aside class="result" aria-live="polite">
+          <div class="knockout" id="knockout" hidden><strong>Afrader:</strong>
+            je staat of loopt meer dan een kwart van de dag. Dan is het advies
+            negatief, hoe leuk de rest ook klinkt.</div>
+          <div class="meter">
+            <svg viewBox="0 0 200 112" aria-hidden="true">
+              <defs>
+                <lineargradient id="g" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color="#E5484D" /><stop offset=".5"
+                    stop-color="#FFC93C" /><stop offset="1"
+                    stop-color="#12A594" />
+                </lineargradient>
+              </defs>
+              <path d="M16 100 A84 84 0 0 1 184 100" fill="none"
+                stroke="var(--line)" stroke-width="18" stroke-linecap="round" />
+              <path id="arc" d="M16 100 A84 84 0 0 1 184 100" fill="none"
+                stroke="url(#g)" stroke-width="18" stroke-linecap="round"
+                pathLength="100" stroke-dasharray="0 100"
+                style="transition:stroke-dasharray .5s cubic-bezier(.3,1.4,.5,1)" />
+            </svg>
+            <div class="num"><span id="score">–</span><small>/100</small></div>
+          </div>
+          <div class="emoji" id="emoji" aria-hidden="true">🤔</div>
+          <p class="verdict" id="verdict">Nog niets ingevuld</p>
+          <p class="verdict-sub" id="verdictSub">Begin links met de eerste
+            vraag.</p>
+          <ul class="breakdown" id="breakdown"></ul>
+          <div class="actions">
+            <button type="button" class="primary" id="save" disabled>Bewaar deze
+              baan</button>
+            <button type="button" class="secondary" id="printNow" disabled>Print
+              rapport</button>
+            <button type="button" class="secondary" id="reset">Nieuwe
+              baan</button>
+          </div>
+          <div class="toast" id="toast"></div>
+        </aside>
+      </div>
+
+      <section class="compare">
+        <h2>Naast elkaar 🏆</h2>
+        <p>Bewaarde banen blijven staan als je de pagina opnieuw opent, zolang
+          je dezelfde browser gebruikt.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Baan</th><th>Score</th><th>Advies</th><th></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
         </div>
-      </div>
-    </form>
+      </section>
 
-    <aside class="result" aria-live="polite">
-      <div class="knockout" id="knockout" hidden><strong>Afrader:</strong> je staat of loopt meer dan een kwart van de dag. Dan is het advies negatief, hoe leuk de rest ook klinkt.</div>
-      <div class="meter">
-        <svg viewBox="0 0 200 112" aria-hidden="true">
-          <defs>
-            <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
-              <stop offset="0" stop-color="#E5484D"/><stop offset=".5" stop-color="#FFC93C"/><stop offset="1" stop-color="#12A594"/>
-            </linearGradient>
-          </defs>
-          <path d="M16 100 A84 84 0 0 1 184 100" fill="none" stroke="var(--line)" stroke-width="18" stroke-linecap="round"/>
-          <path id="arc" d="M16 100 A84 84 0 0 1 184 100" fill="none" stroke="url(#g)" stroke-width="18" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100" style="transition:stroke-dasharray .5s cubic-bezier(.3,1.4,.5,1)"/>
-        </svg>
-        <div class="num"><span id="score">–</span><small>/100</small></div>
-      </div>
-      <div class="emoji" id="emoji" aria-hidden="true">🤔</div>
-      <p class="verdict" id="verdict">Nog niets ingevuld</p>
-      <p class="verdict-sub" id="verdictSub">Begin links met de eerste vraag.</p>
-      <ul class="breakdown" id="breakdown"></ul>
-      <div class="actions">
-        <button type="button" class="primary" id="save" disabled>Bewaar deze baan</button>
-        <button type="button" class="secondary" id="printNow" disabled>Print rapport</button>
-        <button type="button" class="secondary" id="reset">Nieuwe baan</button>
-      </div>
-      <div class="toast" id="toast"></div>
-    </aside>
-  </div>
-
-  <section class="compare">
-    <h2>Naast elkaar 🏆</h2>
-    <p>Bewaarde banen blijven staan als je de pagina opnieuw opent, zolang je dezelfde browser gebruikt.</p>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Baan</th><th>Score</th><th>Advies</th><th>Reistijd</th><th>Fiets</th><th>Organisatie</th><th>Bellen</th><th>Staan/lopen</th><th></th></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+      <footer>Gemaakt met liefde. De uiteindelijke beslissing ligt natuurlijk
+        bij jou, niet bij een meter. 💛</footer>
     </div>
-  </section>
 
-  <footer>Gemaakt met liefde. De uiteindelijke beslissing ligt natuurlijk bij jou, niet bij een meter. 💛</footer>
-</div>
+    <div id="report" class="rp"></div>
 
-<div id="report" class="rp"></div>
-
-<script>
+    <script>
 (function(){
   var $ = function(id){return document.getElementById(id)};
   var f = $('f');
@@ -271,10 +393,12 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
   function read(){
-    var r=$('reistijd').value;
+    var r=$('reistijd').value, u=$('uren').value;
     return {naam:$('naam').value.trim(), reistijd:r===''?null:Math.max(0,Number(r)),
+      uren:u===''?null:Math.max(0,Number(u)), weekend:val('weekend'),
       fiets:val('fiets'), org:val('org'), bellen:val('bellen'), belPct:Number($('belPct').value),
-      staan:val('staan'), staanPct:Number($('staanPct').value)};
+      staan:val('staan'), staanPct:Number($('staanPct').value),
+      lopen:val('lopen'), lopenPct:Number($('lopenPct').value), collega:val('collega')};
   }
 
   // Start 40, maximaal 100
@@ -284,20 +408,33 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
       var p = d.reistijd<=60 ? Math.round(25-(d.reistijd/60)*25) : -Math.round(Math.min(25,(d.reistijd-60)/60*25));
       parts.push(['Reistijd '+d.reistijd+' minuten',p]); total+=p;
     }
+    // Onder 8 uur -15, 8 tot 16 uur -10, 16 t/m 24 uur +10, tot 32 uur -10, 32 uur of meer -25
+    if(d.uren!=null){var up=d.uren<8?-15:d.uren<16?-10:d.uren<=24?10:d.uren<32?-10:-25; parts.push(['Uren per week: '+d.uren,up]); total+=up;}
+    if(d.weekend){var wm={'nooit':5,'af en toe':0,'elk weekend':-10}; parts.push(['Weekendwerk: '+d.weekend,wm[d.weekend]]); total+=wm[d.weekend];}
     if(d.fiets){var fp=d.fiets==='ja'?15:0; parts.push([d.fiets==='ja'?'Op de fiets bereikbaar':'Niet op de fiets',fp]); total+=fp;}
-    if(d.org){var m={'commercieel':0,'non-profit':10,'overheid':10,'zorg':20}; parts.push(['Organisatie: '+d.org,m[d.org]]); total+=m[d.org];}
+    if(d.org){var m={'commercieel':0,'non-profit':10,'overheid':10,'zorg':20,'winkel':10}; parts.push(['Organisatie: '+d.org,m[d.org]]); total+=m[d.org];}
     if(d.bellen){
       if(d.bellen==='ja'&&d.belPct>=20){knock=true; why.push('bellen'); parts.push(['Telefoneren ('+d.belPct+'% van de dag)','afrader']);}
       else {var bp=d.bellen==='ja'?-Math.round(d.belPct/20*8):0; parts.push([d.bellen==='ja'?'Telefoneren ('+d.belPct+'% van de dag)':'Geen telefoonwerk',bp]); total+=bp;}
     }
     if(d.staan){
       var sp = d.staan==='ja' ? (d.staanPct==null?100:d.staanPct) : 0;
-      if(d.staan==='ja' && sp>=25){knock=true; why.push('staan'); parts.push(['Staan/lopen ('+sp+'% van de dag)','afrader']);}
-      else if(d.staan==='ja'){var s=-Math.round(sp/25*8); parts.push(['Staan/lopen ('+sp+'% van de dag)',s]); total+=s;}
+      // Tot en met 25% neutraal, daarboven afrader
+      if(d.staan==='ja' && sp>25){knock=true; why.push('staan'); parts.push(['Staan ('+sp+'% van de dag)','afrader']);}
+      else if(d.staan==='ja') parts.push(['Staan ('+sp+'% van de dag)',0]);
       else parts.push(['Vooral zittend werk',0]);
     }
+    if(d.lopen){
+      var sp = d.lopen==='ja' ? (d.lopenPct==null?100:d.lopenPct) : 0;
+      // Tot en met 60% een klein pluspunt, daarboven afrader
+      if(d.lopen==='ja' && sp>60){knock=true; why.push('lopen'); parts.push(['Lopen ('+sp+'% van de dag)','afrader']);}
+      else if(d.lopen==='ja'){parts.push(['Lopen ('+sp+'% van de dag)',5]); total+=5;}
+      else parts.push(['Weinig lopen',0]);
+    }
+    if(d.collega){var cp=d.collega==='ja'?0:-10; parts.push([d.collega==='ja'?'Directe dagelijkse collega\'s':'Geen directe dagelijkse collega\'s',cp]); total+=cp;}
     total=Math.max(0,Math.min(100,total));
-    var done=d.reistijd!==null&&d.fiets&&d.org&&d.bellen&&d.staan;
+    var open=[d.reistijd!==null,d.uren!=null,d.weekend,d.fiets,d.org,d.bellen,d.staan,d.collega].filter(function(x){return !x}).length;
+    var done=open===0;
     var cls = knock?'neg':total>=70?'pos':total>=50?'mid':'neg';
     var verdict = cls==='pos'?'Positief advies':cls==='mid'?'Twijfelgeval':'Negatief advies';
     var sub, emo;
@@ -310,7 +447,7 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
     else if(cls==='pos'){sub='Deze baan past goed bij je wensen.';emo='😄';}
     else if(cls==='mid'){sub='Er zit wat tegen. Even een nachtje over slapen.';emo='🤔';}
     else {sub='Te veel punten zitten tegen. Volgende vacature!';emo='🙅‍♀️';}
-    return {score:total,parts:parts,done:!!done,knock:knock,why:why,cls:cls,verdict:verdict,sub:sub,emo:emo};
+    return {score:total,parts:parts,done:done,open:open,knock:knock,why:why,cls:cls,verdict:verdict,sub:sub,emo:emo};
   }
 
   function fmtPart(v){
@@ -323,12 +460,15 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
     $('belFollow').hidden=d.bellen!=='ja'; $('belPctOut').textContent=d.belPct+'%';
     $('belHint').textContent = d.belPct<20?'Tot 20% is prima. Een belletje hier en daar kan geen kwaad.':d.belPct>=75?'Dat is bijna een callcenter. Afrader.':'20% of meer: dat wordt een afrader.';
     $('staanFollow').hidden=d.staan!=='ja'; $('staanPctOut').textContent=d.staanPct+'%';
-    $('staanHint').textContent = d.staanPct<25?'Tot 25% is prima. Even de benen strekken is gezond.':'Meer dan een kwart van de dag: dat wordt een afrader.';
+    $('staanHint').textContent = d.staanPct<=25?'Tot en met 25% is prima. Even de benen strekken is gezond.':'Meer dan een kwart van de dag: dat wordt een afrader.';
+    $('lopenFollow').hidden=d.lopen!=='ja'; $('lopenPctOut').textContent=d.lopenPct+'%';
+    $('lopenHint').textContent = d.lopenPct<=60?'Tot en met 60% is prima, zelfs een klein pluspunt. Daarboven wordt het een afrader.':'Meer dan 60% van de dag lopen: dat wordt een afrader.';
     $('knockout').hidden=!r.knock;
     if(r.knock){
       var reasons=[];
       if(r.why.indexOf('bellen')>-1)reasons.push('je zit 20% of meer van de dag aan de telefoon');
       if(r.why.indexOf('staan')>-1)reasons.push('je staat of loopt meer dan een kwart van de dag');
+      if(r.why.indexOf('lopen')>-1)reasons.push('je loopt meer dan 60% van de dag');
       $('knockout').innerHTML='<strong>Afrader:</strong> '+reasons.join(' en ')+'. Dan is het advies negatief, hoe leuk de rest ook klinkt.';
     }
     var n=r.parts.length;
@@ -341,7 +481,7 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
       if(r.done||r.knock){
         $('emoji').textContent=r.emo; $('verdict').textContent=r.verdict; $('verdict').style.color=COL[r.cls]; $('verdictSub').textContent=r.sub;
       } else {
-        var left=5-n; $('emoji').textContent='✍️'; $('verdict').textContent='Tussenstand'; $('verdict').style.color='';
+        var left=r.open; $('emoji').textContent='✍️'; $('verdict').textContent='Tussenstand'; $('verdict').style.color='';
         $('verdictSub').textContent='Nog '+left+(left===1?' vraag':' vragen')+' te gaan. Bijna!';
       }
     }
@@ -356,10 +496,13 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
   function answerRows(d){
     return [
       ['Reistijd (enkele reis)', d.reistijd+' minuten'],
+      ['Uren per week', d.uren!=null?d.uren+' uur':'niet ingevuld'],
+      ['Weekendwerk', d.weekend||'niet ingevuld'],
       ['Op de fiets bereikbaar', d.fiets],
       ['Soort organisatie', d.org],
       ['Telefoneren', d.bellen==='ja'?'ja, ongeveer '+d.belPct+'% van de dag':'nee'],
-      ['Staan of lopen', d.staan==='ja'?'ja, ongeveer '+(d.staanPct==null?'?':d.staanPct)+'% van de dag':'nee']
+      ['Staan of lopen', d.staan==='ja'?'ja, ongeveer '+(d.staanPct==null?'?':d.staanPct)+'% van de dag':'nee'],
+      ['Directe dagelijkse collega\'s', d.collega||'niet ingevuld']
     ];
   }
 
@@ -386,34 +529,55 @@ footer{color:var(--muted);text-align:center;margin-top:3rem;font-size:.92rem}
 
   function renderRows(){
     var l=load();
-    if(!l.length){$('rows').innerHTML='<tr><td colspan="9" class="empty">Nog geen banen bewaard. Vul er een in en klik op "Bewaar deze baan". 📝</td></tr>';return}
+    if(!l.length){$('rows').innerHTML='<tr><td colspan="4" class="empty">Nog geen banen bewaard. Vul er een in en klik op "Bewaar deze baan". 📝</td></tr>';return}
     l.sort(function(a,b){return calc(b).score-(calc(b).knock?999:0)-(calc(a).score-(calc(a).knock?999:0))});
     var medals=['🥇','🥈','🥉'];
     $('rows').innerHTML=l.map(function(x,i){
       var r=calc(x);
       var m = !r.knock && i<3 ? '<span class="medal" aria-hidden="true">'+medals[i]+'</span>' : '';
-      return '<tr><td>'+m+esc(x.naam||'Naamloos')+'</td><td class="score" style="color:'+COL[r.cls]+'">'+r.score+'</td><td>'+r.verdict+'</td><td>'+x.reistijd+' min</td><td>'+x.fiets+'</td><td>'+esc(x.org)+'</td><td>'+(x.bellen==='ja'?x.belPct+'%':'nee')+'</td><td>'+(x.staan==='ja'?(x.staanPct==null?'ja':x.staanPct+'%'):'nee')+'</td>'+
+      return '<tr><td>'+m+'<button class="edit" data-edit="'+x.id+'" title="Open in de vragenlijst">'+esc(x.naam||'Naamloos')+'</button></td><td class="score" style="color:'+COL[r.cls]+'">'+r.score+'</td><td>'+r.verdict+'</td>'+
         '<td><div class="rowbtns"><button class="secondary" data-print="'+x.id+'">Print</button><button class="del" data-del="'+x.id+'">Verwijder</button></div></td></tr>';
     }).join('');
   }
 
+  // Id van de bewaarde baan die nu in de vragenlijst staat; bewaren werkt die dan bij
+  var editing=null;
+  function setEditing(id){editing=id; $('save').textContent=id?'Werk deze baan bij':'Bewaar deze baan';}
+
+  function fill(x){
+    f.reset();
+    $('naam').value=x.naam||'';
+    $('reistijd').value=x.reistijd==null?'':x.reistijd;
+    $('uren').value=x.uren==null?'':x.uren;
+    ['weekend','fiets','org','bellen','staan','lopen','collega'].forEach(function(n){
+      var el=f.querySelector('input[name="'+n+'"][value="'+x[n]+'"]'); if(el)el.checked=true;
+    });
+    $('belPct').value=x.belPct==null?10:x.belPct;
+    $('staanPct').value=x.staanPct==null?10:x.staanPct;
+    $('lopenPct').value=x.lopenPct==null?10:x.lopenPct;
+    setEditing(x.id); render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
   $('save').addEventListener('click',function(){
     var d=read(); if(!calc(d).done)return;
-    var l=load(); l.push(Object.assign({id:Date.now().toString(36)},d));
-    toast(store(l)?'Bewaard! Hij staat nu onderaan in de vergelijking.':'Bewaren lukte niet in deze browser. Print het rapport om het vast te leggen.');
-    renderRows();
+    var l=load(), id=editing||Date.now().toString(36), upd=!!editing;
+    l=l.filter(function(y){return y.id!==id}); l.push(Object.assign({id:id},d));
+    toast(store(l)?(upd?'Bijgewerkt! De vergelijking is aangepast.':'Bewaard! Hij staat nu in de vergelijking.'):'Bewaren lukte niet in deze browser. Print het rapport om het vast te leggen.');
+    setEditing(id); renderRows();
   });
   $('printNow').addEventListener('click',function(){printReport(read())});
   $('rows').addEventListener('click',function(e){
-    var p=e.target.closest('[data-print]'), del=e.target.closest('[data-del]');
+    var p=e.target.closest('[data-print]'), del=e.target.closest('[data-del]'), ed=e.target.closest('[data-edit]');
     if(p){var x=load().filter(function(y){return y.id===p.dataset.print})[0]; if(x)printReport(x);}
-    if(del){store(load().filter(function(y){return y.id!==del.dataset.del})); renderRows(); toast('Verwijderd. Die was het dus niet. 👋');}
+    if(ed){var x=load().filter(function(y){return y.id===ed.dataset.edit})[0]; if(x){fill(x); toast('"'+(x.naam||'Naamloos')+'" staat weer in de vragenlijst. Pas aan en klik op "Werk deze baan bij".');}}
+    if(del){if(del.dataset.del===editing)setEditing(null); store(load().filter(function(y){return y.id!==del.dataset.del})); renderRows(); toast('Verwijderd. Die was het dus niet. 👋');}
   });
-  $('reset').addEventListener('click',function(){f.reset();$('belPct').value=10;$('staanPct').value=10;render();$('naam').focus();window.scrollTo({top:0,behavior:'smooth'})});
+  $('reset').addEventListener('click',function(){f.reset();setEditing(null);$('belPct').value=10;$('staanPct').value=10;$('lopenPct').value=10;render();$('naam').focus();window.scrollTo({top:0,behavior:'smooth'})});
   f.addEventListener('input',render); f.addEventListener('change',render);
   window.addEventListener('beforeprint',function(){ if(!$('report').innerHTML){var d=read(); if(calc(d).done) buildReport(d);} });
   render(); renderRows();
 })();
 </script>
-</body>
+  </body>
 </html>
